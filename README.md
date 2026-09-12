@@ -7,6 +7,13 @@ pip install flask flask_sqlalchemy flask_login
 python app.py
 ```
 
+## Deploy to Render
+
+The repository includes `render.yaml`. If creating the service manually, use:
+
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `gunicorn app:app`
+
 ## Default Admin
 
 - Email: `admin@hotel.com`
