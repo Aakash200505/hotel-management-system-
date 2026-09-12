@@ -1,0 +1,56 @@
+﻿{% extends 'base.html' %}
+{% block title %}Manage Rooms{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="glass-card p-4 mb-4">
+        <h4 class="brand-font">Add Room</h4>
+        <form method="post" action="{{ url_for('admin_add_room') }}" class="row g-2">
+            <div class="col-md-3">
+                <select class="form-select" name="hotel_id" required>
+                    <option value="">Select Hotel</option>
+                    {% for hotel in hotels %}
+                    <option value="{{ hotel.id }}">{{ hotel.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="room_type" required>
+                    <option>Single</option><option>Double</option><option>Deluxe</option><option>Suite</option>
+                </select>
+            </div>
+            <div class="col-md-6"><input class="form-control" name="base_price" step="0.01" type="number" placeholder="Base Price" required></div>
+            <div class="col-md-1"><button class="btn btn-gradient w-100" type="submit">Add</button></div>
+        </form>
+    </div>
+
+    <div class="glass-card p-3">
+        <h4 class="brand-font">Room Inventory</h4>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>Hotel</th><th>Type</th><th>Base</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for room in rooms %}
+                    <tr>
+                        <td>{{ room.hotel.name }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('admin_edit_room', room_id=room.id) }}" class="d-flex gap-1 align-items-center">
+                                <input class="form-control form-control-sm" name="room_type" value="{{ room.room_type }}">
+                        </td>
+                        <td><input class="form-control form-control-sm" type="number" step="0.01" name="base_price" value="{{ room.base_price }}"></td>
+                        <td class="d-flex gap-1">
+                                <button class="btn btn-sm btn-outline-primary" type="submit">Save</button>
+                            </form>
+                            <form method="post" action="{{ url_for('admin_delete_room', room_id=room.id) }}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center">No rooms available.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

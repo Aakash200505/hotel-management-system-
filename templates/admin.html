@@ -1,0 +1,48 @@
+﻿{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <a class="btn btn-gradient" href="{{ url_for('admin_hotels') }}">Manage Hotels</a>
+        <a class="btn btn-outline-dark" href="{{ url_for('admin_rooms') }}">Manage Rooms</a>
+        <a class="btn btn-outline-dark" href="{{ url_for('admin_users') }}">Manage Users</a>
+        <a class="btn btn-outline-dark" href="{{ url_for('admin_bookings') }}">Manage Bookings</a>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-3"><div class="stat-card"><h6>Total Bookings</h6><p>{{ total_bookings }}</p></div></div>
+        <div class="col-md-3"><div class="stat-card"><h6>Confirmed</h6><p>{{ confirmed_bookings }}</p></div></div>
+        <div class="col-md-3"><div class="stat-card"><h6>Total Revenue</h6><p>₹{{ '%.2f'|format(total_revenue) }}</p></div></div>
+        <div class="col-md-3"><div class="stat-card"><h6>Total Users</h6><p>{{ total_users }}</p></div></div>
+    </div>
+
+    <div class="glass-card p-4 mt-4">
+        <h4 class="brand-font">Monthly Revenue Analytics</h4>
+        <canvas id="revenueChart" height="110"></canvas>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const labels = {{ chart_labels|tojson }};
+const values = {{ chart_values|tojson }};
+const ctx = document.getElementById('revenueChart');
+if (ctx) {
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Revenue',
+                data: values,
+                fill: true,
+                tension: 0.35,
+                borderColor: '#2c7a7b',
+                backgroundColor: 'rgba(44, 122, 123, .15)'
+            }]
+        }
+    });
+}
+</script>
+{% endblock %}
+

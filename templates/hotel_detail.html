@@ -1,0 +1,44 @@
+﻿{% extends 'base.html' %}
+{% block title %}Hotel Details{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <img class="img-fluid rounded-4 shadow" src="{{ url_for('static', filename='images/hotels/' + hotel.image_filename) }}" alt="{{ hotel.name }}" onerror="this.src='https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=1000';">
+        </div>
+        <div class="col-lg-5">
+            <div class="glass-card p-4 h-100">
+                <h2 class="brand-font">{{ hotel.name }}</h2>
+                <p class="mb-1">{{ hotel.location }}</p>
+                <p class="text-muted small">{{ hotel.address }}</p>
+                <p>{{ hotel.description }}</p>
+                <p class="small"><strong>Amenities:</strong> {{ hotel.amenities }}</p>
+                <p class="fw-semibold">Base Price: ₹{{ '%.2f'|format(hotel.price_per_night) }} / night</p>
+                <p>Rating: ⭐ {{ '%.1f'|format(hotel.rating) }}</p>
+                {% if current_user.is_authenticated %}
+                <a class="btn btn-gradient" href="{{ url_for('booking', hotel_id=hotel.id) }}">Book Now</a>
+                {% else %}
+                <a class="btn btn-outline-dark" href="{{ url_for('login') }}">Login to Book</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-4 mt-4">
+        <h4 class="brand-font">Available Room Types</h4>
+        <div class="row g-3 mt-1">
+            {% for room in hotel.rooms %}
+            <div class="col-md-6">
+                <div class="border rounded-3 p-3 bg-white">
+                    <h6>{{ room.room_type }}</h6>
+                    <p class="mb-1">Base: ₹{{ '%.2f'|format(room.base_price) }}</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12"><div class="alert alert-info mb-0">No rooms configured yet.</div></div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

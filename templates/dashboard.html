@@ -1,0 +1,54 @@
+﻿{% extends 'base.html' %}
+{% block title %}User Dashboard{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="glass-card p-4">
+                <h4 class="brand-font">My Profile</h4>
+                <form method="post">
+                    <div class="mb-2"><label class="form-label">Name</label><input class="form-control" name="name" value="{{ current_user.name }}"></div>
+                    <div class="mb-2"><label class="form-label">Email</label><input class="form-control" value="{{ current_user.email }}" disabled></div>
+                    <div class="mb-3"><label class="form-label">Phone</label><input class="form-control" name="phone" value="{{ current_user.phone }}"></div>
+                    <button class="btn btn-gradient w-100" type="submit">Update Profile</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="glass-card p-4">
+                <h4 class="brand-font mb-3">Booking History</h4>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr><th>ID</th><th>Hotel</th><th>Room</th><th>Dates</th><th>Status</th><th>Total</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for b in bookings %}
+                            <tr>
+                                <td>#{{ b.id }}</td>
+                                <td>{{ b.hotel.name }}</td>
+                                <td>{{ b.room.room_type }}</td>
+                                <td>{{ b.check_in }} - {{ b.check_out }}</td>
+                                <td><span class="badge text-bg-{% if b.status == 'confirmed' %}success{% elif b.status == 'pending' %}warning{% else %}secondary{% endif %}">{{ b.status }}</span></td>
+                                <td>₹{{ '%.2f'|format(b.total_price) }}</td>
+                                <td class="d-flex gap-1">
+                                    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('receipt', booking_id=b.id) }}">Receipt</a>
+                                    {% if b.status != 'cancelled' %}
+                                    <form method="post" action="{{ url_for('cancel_booking', booking_id=b.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger" type="submit">Cancel</button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="7" class="text-center">No bookings yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

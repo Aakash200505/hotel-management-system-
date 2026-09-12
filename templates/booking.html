@@ -1,0 +1,58 @@
+﻿{% extends 'base.html' %}
+{% block title %}Book Hotel{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card p-4">
+                <h3 class="brand-font">Book: {{ hotel.name }}</h3>
+                <form method="post" id="bookingForm">
+                    <div class="mb-3">
+                        <label class="form-label">Room Type</label>
+                        <select name="room_id" class="form-select" id="roomSelect" required>
+                            <option value="">Select room</option>
+                            {% for room in hotel.rooms %}
+                            <option value="{{ room.id }}" data-price="{{ room.base_price * room.price_modifier }}">{{ room.room_type }} - ₹{{ '%.2f'|format(room.base_price * room.price_modifier) }}/night</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3"><label class="form-label">Check In</label><input class="form-control" type="date" name="check_in" id="checkIn" required></div>
+                        <div class="col-md-6 mb-3"><label class="form-label">Check Out</label><input class="form-control" type="date" name="check_out" id="checkOut" required></div>
+                    </div>
+                    <div class="alert alert-secondary" id="pricePreview">Estimated Total: ₹0.00</div>
+                    <button class="btn btn-gradient w-100" type="submit">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+    const roomSelect = document.getElementById('roomSelect');
+    const checkIn = document.getElementById('checkIn');
+    const checkOut = document.getElementById('checkOut');
+    const preview = document.getElementById('pricePreview');
+
+    function calc() {
+        const selected = roomSelect.options[roomSelect.selectedIndex];
+        const nightly = parseFloat(selected?.dataset?.price || 0);
+        const ci = new Date(checkIn.value);
+        const co = new Date(checkOut.value);
+        let days = 0;
+        if (!Number.isNaN(ci.getTime()) && !Number.isNaN(co.getTime())) {
+            days = Math.max((co - ci) / (1000 * 60 * 60 * 24), 0);
+        }
+        const total = nightly * days;
+        preview.textContent = `Estimated Total: ₹${total.toFixed(2)} (${days || 0} night(s))`;
+    }
+
+    roomSelect.addEventListener('change', calc);
+    checkIn.addEventListener('change', calc);
+    checkOut.addEventListener('change', calc);
+})();
+</script>
+{% endblock %}
+

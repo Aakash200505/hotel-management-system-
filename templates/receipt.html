@@ -1,0 +1,26 @@
+﻿{% extends 'base.html' %}
+{% block title %}Booking Receipt{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="glass-card p-4">
+                <h3 class="brand-font">Booking Receipt</h3>
+                <hr>
+                <p><strong>Booking ID:</strong> #{{ booking.id }}</p>
+                <p><strong>Guest:</strong> {{ booking.user.name }}</p>
+                <p><strong>Hotel:</strong> {{ booking.hotel.name }}</p>
+                <p><strong>Room:</strong> {{ booking.room.room_type }}</p>
+                <p><strong>Stay:</strong> {{ booking.check_in }} to {{ booking.check_out }} ({{ booking.nights }} nights)</p>
+                <p><strong>Total:</strong> ₹{{ '%.2f'|format(booking.total_price) }}</p>
+                <p><strong>Status:</strong> {{ booking.status }} | {{ booking.payment_status }}</p>
+                {% if payment %}
+                <p><strong>Transaction:</strong> {{ payment.transaction_ref }} ({{ payment.status }})</p>
+                {% endif %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-gradient mt-2">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
